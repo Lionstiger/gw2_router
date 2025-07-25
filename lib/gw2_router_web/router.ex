@@ -1,4 +1,6 @@
 defmodule Gw2RouterWeb.Router do
+  import Phoenix.LiveView.Router
+  import Oban.Web.Router
   use Gw2RouterWeb, :router
 
   pipeline :browser do
@@ -10,6 +12,16 @@ defmodule Gw2RouterWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :admin do
+    plug :auth
+
+    defp auth(conn, _opts) do
+      username = System.fetch_env!("SETUP_USERNAME")
+      password = System.fetch_env!("SETUP_PASSWORD")
+      Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+    end
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -17,7 +29,8 @@ defmodule Gw2RouterWeb.Router do
   scope "/", Gw2RouterWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+    live "/", HomeLive, :index
   end
 
   # Other scopes may use custom stacks.
@@ -25,20 +38,15 @@ defmodule Gw2RouterWeb.Router do
   #   pipe_through :api
   # end
 
-  # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:gw2_router, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
+  scope "/admin", Gw2RouterWeb do
+    pipe_through [:browser, :admin]
     import Phoenix.LiveDashboard.Router
 
-    scope "/dev" do
-      pipe_through :browser
+    live_dashboard "/dashboard", metrics: ArgumentWeb.Telemetry
+    # forward "/mailbox", Plug.Swoosh.MailboxPreview
 
-      live_dashboard "/dashboard", metrics: Gw2RouterWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
+    oban_dashboard("/oban")
+
+    live "/", AdminLive, :index
   end
 end
