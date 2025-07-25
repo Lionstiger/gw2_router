@@ -61,6 +61,14 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Oban
+config :oban, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [routing: 5, data_refresh: 2],
+  repo: Gw2Router.Repo,
+  # plugins: [{Oban.Plugins.Pruner, max_age: 300}],
+  plugins: [{Oban.Plugins.Lifeline, rescue_after: :timer.minutes(15)}]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

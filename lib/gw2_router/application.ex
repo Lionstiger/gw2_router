@@ -13,6 +13,7 @@ defmodule Gw2Router.Application do
       {DNSCluster, query: Application.get_env(:gw2_router, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Gw2Router.PubSub},
       # Start the Finch HTTP client for sending emails
+      {Oban, Application.fetch_env!(:oban, Oban)},
       {Finch, name: Gw2Router.Finch},
       # Start a worker by calling: Gw2Router.Worker.start_link(arg)
       # {Gw2Router.Worker, arg},
