@@ -57,7 +57,19 @@ defmodule Gw2Router.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+
+      # oban
+      {:oban, "~> 2.19"},
+      {:oban_web, "~> 2.11"},
+
+      # documentation
+      {:ex_doc, ">= 0.31.0", only: :dev, runtime: false},
+
+      # mix deps.audit
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
+      {:ecto_psql_extras, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
 
