@@ -59,7 +59,8 @@ defmodule Gw2Router.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-
+      {:req, "~> 0.5.15"},
+      {:live_debugger, "~> 0.3.0", only: :dev},
       # oban
       {:oban, "~> 2.19"},
       {:oban_web, "~> 2.11"},
