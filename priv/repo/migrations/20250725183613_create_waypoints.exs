@@ -9,8 +9,8 @@ defmodule Gw2Router.Repo.Migrations.CreateWaypoints do
       add :y, :float
       add :poi_id, :integer
       add :chatlink, :string
-
-      timestamps(type: :utc_datetime)
     end
+
+    create unique_index(:waypoints, [:poi_id])
   end
 end
