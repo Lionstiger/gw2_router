@@ -12,6 +12,7 @@ defmodule Gw2Router.Application do
       Gw2Router.Repo,
       {DNSCluster, query: Application.get_env(:gw2_router, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Gw2Router.PubSub},
+      {Gw2Router.WaypointChecker, name: Gw2Router.WaypointChecker},
       # Start the Finch HTTP client for sending emails
       {Oban, Application.fetch_env!(:oban, Oban)},
       {Finch, name: Gw2Router.Finch},

@@ -1,0 +1,89 @@
+<div id="copy_buffer" hidden>{@wp_copybuffer}</div>
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-base font-semibold leading-6 text-gray-900">New Request</h1>
+    </div>
+  </div>
+  <.form phx-submit="route_request" class=" mx-auto px-4">
+    <div class="flex gap-2">
+      <div class="w-4/5">
+        <.input
+          class="flex-1"
+          id="wp_text_input"
+          phx-hook="ClearInput"
+          type="text"
+          phx-change="waypoint_text_edited"
+          placeholder="Paste chatlinks here"
+          name="wp_text"
+          value={@wp_text}
+          label="Input"
+        />
+      </div>
+      <div class="w-1/5">
+        <.input
+          class="flex-1"
+          phx-change="level_changed"
+          type="number"
+          name="level"
+          label="Level"
+          min="1"
+          max="80"
+          step="1"
+          value="80"
+        />
+      </div>
+    </div>
+    <h1>Waypoints</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Index</th>
+          <th>Name</th>
+          <th>Chatlink</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for {waypoint, index} <- Enum.with_index(@wp_list,1) do %>
+          <tr>
+            <td>{index}</td>
+            <td>{waypoint.name}</td>
+            <td>{waypoint.chatlink}</td>
+            <td>
+              <.link phx-click={JS.push("delete", value: %{index: index - 1})}>
+                x
+              </.link>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="flex gap-2">
+      <div class="w-2/3">
+        <.button phx-disable-with="Saving..." class="w-full">Optimize Route</.button>
+      </div>
+      <div
+        class="w-1/3"
+        x-data="{
+    copyToClipboard(){
+    text = document.getElementById('copy_buffer').textContent;
+    console.log(text);
+    navigator.clipboard.writeText(text)
+        .then(() => { console.log('clipboard updated');})
+        .catch((err) => {console.error('clipboard error: ', err);})
+    }}"
+      >
+        <button
+          type="button"
+          class="w-full rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80"
+          @click="copyToClipboard()"
+        >
+          Copy to clipboard
+        </button>
+      </div>
+    </div>
+  </.form>
+</div>
+<GoldValue.render copper_amount={@cost} />
