@@ -9,7 +9,8 @@ config :gw2_router, Gw2Router.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "gw2_router_test#{System.get_env("MIX_TEST_PARTITION")}",
+  # database: "gw2_router_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "gw2_router_dev",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 
