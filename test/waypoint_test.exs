@@ -15,7 +15,7 @@ defmodule Gw2Router.WaypointTest do
       wp1 = Enum.find(all_wp, &(&1.chatlink == "[&BGMNAAA=]"))
       wp2 = Enum.find(all_wp, &(&1.chatlink == "[&BO4CAAA=]"))
 
-      result = round(Waypoint.calculate_full_route_cost([wp1, wp2], 80))
+      result = Waypoint.calculate_full_route_cost([wp1, wp2], 80, 15)
       assert result == 928
     end
 
@@ -23,8 +23,16 @@ defmodule Gw2Router.WaypointTest do
       wp1 = Enum.find(all_wp, &(&1.chatlink == "[&BOMAAAA=]"))
       wp2 = Enum.find(all_wp, &(&1.chatlink == "[&BJIBAAA=]"))
 
-      result = Waypoint.calculate_full_route_cost([wp1, wp2], 80)
+      result = Waypoint.calculate_full_route_cost([wp1, wp2], 80, 15)
       assert result == 156
+    end
+
+    test "Arborstone Waypoint -> Bastion of Balance Waypoints", %{all_wp: all_wp} do
+      wp1 = Enum.find(all_wp, &(&1.chatlink == "[&BGMNAAA=]"))
+      wp2 = Enum.find(all_wp, &(&1.chatlink == "[&BD0OAAA=]"))
+
+      result = Waypoint.calculate_full_route_cost([wp1, wp2], 80, 15)
+      assert result == 1141
     end
   end
 end
