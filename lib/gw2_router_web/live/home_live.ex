@@ -19,6 +19,7 @@ defmodule Gw2RouterWeb.HomeLive do
      |> assign(:old_cost, 0.0)
      |> assign(:cost, 0.0)
      |> assign(:level, 80)
+     |> assign(:guild_buff, 0)
      |> assign(:wp_text, "")
      |> assign(:wp_list, [])}
   end
@@ -37,10 +38,10 @@ defmodule Gw2RouterWeb.HomeLive do
   def handle_event("waypoint_text_edited", %{"wp_text" => wp_input}, socket) do
     found_wp = Gw2Router.WaypointChecker.search(wp_input)
 
-    new_text =
-      Enum.reduce(Enum.map(found_wp, fn wp -> wp.chatlink end), wp_input, fn substring, acc ->
-        String.replace(acc, substring, "")
-      end)
+    # new_text =
+    #   Enum.reduce(Enum.map(found_wp, fn wp -> wp.chatlink end), wp_input, fn substring, acc ->
+    #     String.replace(acc, substring, "")
+    #   end)
 
     IO.inspect(socket.assigns.level)
     # {:noreply, socket |> assign(:wp_list, socket.assigns.wp_list ++ found_wp)}
@@ -50,7 +51,11 @@ defmodule Gw2RouterWeb.HomeLive do
      |> assign(:wp_copybuffer, Waypoint.copy_buffer(socket.assigns.wp_list))
      |> assign(
        :cost,
-       Waypoint.calculate_full_route_cost(socket.assigns.wp_list, socket.assigns.level)
+       Waypoint.calculate_full_route_cost(
+         socket.assigns.wp_list,
+         socket.assigns.level,
+         socket.assigns.guild_buff
+       )
      )}
   end
 
@@ -60,16 +65,47 @@ defmodule Gw2RouterWeb.HomeLive do
         %{"level" => level},
         socket
       ) do
-    # IO.inspect(params)
     IO.puts("Level Updated #{level}")
-    # TODO Update Price
 
     {:noreply,
      socket
      |> assign(:level, String.to_integer(level))
      |> assign(
        :cost,
-       Waypoint.calculate_full_route_cost(socket.assigns.wp_list, String.to_integer(level))
+       Waypoint.calculate_full_route_cost(
+         socket.assigns.wp_list,
+         String.to_integer(level),
+         socket.assigns.guild_buff
+       )
+     )}
+  end
+
+  @impl true
+  def handle_event(
+        "guild_buff_changed",
+        %{"guild_buff" => gb_string},
+        socket
+      ) do
+    guild_buff =
+      case gb_string do
+        "0%" -> 0
+        "5%" -> 5
+        "10%" -> 10
+        "15%" -> 15
+      end
+
+    IO.puts("Guild Buff updated #{guild_buff}")
+
+    {:noreply,
+     socket
+     |> assign(:guild_buff, guild_buff)
+     |> assign(
+       :cost,
+       Waypoint.calculate_full_route_cost(
+         socket.assigns.wp_list,
+         socket.assigns.level,
+         guild_buff
+       )
      )}
   end
 

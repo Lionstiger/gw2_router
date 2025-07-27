@@ -32,13 +32,10 @@ defmodule Gw2Router.Waypoint do
     |> Enum.with_index(1)
     |> Enum.map(fn {wp, index} -> "#{index}: #{wp.chatlink}" end)
     |> Enum.join("\n")
-
-    # |> IO.inspect()
-
-    # |> IO.inspect()
   end
 
-  def calculate_full_route_cost(wp_list, level) when is_list(wp_list) and is_integer(level) do
+  def calculate_full_route_cost(wp_list, level, guild_buff)
+      when is_list(wp_list) and is_integer(level) do
     new_cost =
       wp_list
       |> Enum.chunk_every(2, 1, :discard)
@@ -46,7 +43,7 @@ defmodule Gw2Router.Waypoint do
         if p1 == p2 do
           0.0
         else
-          calculate_travel_cost(p1, p2, level)
+          calculate_travel_cost(p1, p2, level, guild_buff)
         end
       end)
       |> Enum.sum()
@@ -57,23 +54,27 @@ defmodule Gw2Router.Waypoint do
     new_cost
   end
 
-  defp calculate_travel_cost(wp1, wp2, level) do
+  defp calculate_travel_cost(wp1, wp2, level, guild_buff) do
     # Waypoint cost = C1 * [ 0.78 + max(0, (0.0003 / 24) * (Distance - 14400)) ] + C2
     c1 = calculate_c1(level)
     c2 = calculate_c2(level)
     distance = distance(wp1, wp2)
-    c1 * (0.78 + max(0, 0.003 / 24 * (distance - 14400))) + c2
+    (c1 * (0.78 + max(0, 0.0003 / 24 * (distance - 14400))) + c2) * (1 - guild_buff / 100)
   end
 
   def distance(wp1, wp2) do
-    dx = wp2.x - wp1.y
+    # IO.inspect([wp1, wp2], label: "waypoints")
+    dx = wp2.x - wp1.x
     dy = wp2.y - wp1.y
-    :math.sqrt(dx * dx + dy * dy)
+    # IO.inspect([dx, dy], label: "dx, dy")
+    # times 24 because of unit differences
+    :math.sqrt(dx * dx + dy * dy) * 24
   end
 
   @spec calculate_c1(Integer.t()) :: Float.t()
   defp calculate_c1(level) when level >= 0 and level <= 80 do
     23 / 40 * level + 4
+    # 0.5823 * level + 3.4177
   end
 
   @spec calculate_c1(Integer.t()) :: ArgumentError.t()
@@ -88,8 +89,9 @@ defmodule Gw2Router.Waypoint do
 
   @spec calculate_c2(Integer.t()) :: Float.t()
   defp calculate_c2(level) when level > 30 and level <= 80 do
-    slope = 1 / 49
-    slope * (level - 31)
+    # slope = 1 / 49
+    # ceil(slope * (level - 31)) * 100
+    2 * level - 60
   end
 
   @spec calculate_c2(Integer.t()) :: Float.t()
