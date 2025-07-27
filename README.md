@@ -1,18 +1,13 @@
 # Gw2Router
 
-To start your Phoenix server:
+## TODO:
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- [ ] allow sending initial waypoints via get parameter
+- [ ] Add all POI, not just waypoints
+  - Maybe even record closest wp to a poi
+- [ ] show/save saved gold, accumulate this
+- [ ] automatically show common routes for the day
+- [ ] give option to automatically update clipboard with result, so you dont have to click
+- [ ] heuristics for large lists
+- [x] pin first waypoint
+      To start your Phoenix server:
