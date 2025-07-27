@@ -14,6 +14,7 @@
           phx-hook="ClearInput"
           type="text"
           phx-change="waypoint_text_edited"
+          phx-debounce="500"
           placeholder="Paste chatlinks here"
           name="wp_text"
           value={@wp_text}
@@ -24,6 +25,7 @@
         <.input
           class="flex-1"
           phx-change="guild_buff_changed"
+          phx-debounce="300"
           type="select"
           name="guild_buff"
           label="Guild Buff"
@@ -35,6 +37,7 @@
         <.input
           class="flex-1"
           phx-change="level_changed"
+          phx-debounce="300"
           type="number"
           name="level"
           label="Level"
@@ -73,7 +76,9 @@
 
     <div class="flex gap-2">
       <div class="w-2/3">
-        <.button phx-disable-with="Saving..." class="w-full">Optimize Route</.button>
+        <.button phx-throttle="1000" phx-disable-with="Saving..." class="w-full">
+          Optimize Route
+        </.button>
       </div>
       <div
         class="w-1/3"
