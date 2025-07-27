@@ -150,7 +150,10 @@ defmodule Gw2RouterWeb.HomeLive do
      socket
      |> assign(:status, "Done")
      |> assign(:wp_list, updated_list)
-     |> assign(:cost, Waypoint.calculate_full_route_cost(updated_list, level))}
+     |> assign(
+       :cost,
+       Waypoint.calculate_full_route_cost(updated_list, level, socket.assigns.guild_buff)
+     )}
   end
 
   @impl true
