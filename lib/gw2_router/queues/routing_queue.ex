@@ -42,7 +42,8 @@ defmodule Gw2Router.RoutingQueue do
     else
       {_, shortest_path} =
         wp_list
-        |> ListUtils.permutations()
+        |> ListUtils.permutations_fixed_first()
+        # |> ListUtils.permutations()
         |> Enum.map(fn path -> {total_distance(path), path} end)
         |> Enum.min_by(fn {distance, _path} -> distance end)
 

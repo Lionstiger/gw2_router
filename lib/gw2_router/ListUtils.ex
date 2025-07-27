@@ -11,4 +11,10 @@ defmodule ListUtils do
   def permutations(list) do
     for h <- list, t <- permutations(List.delete(list, h)), do: [h | t]
   end
+
+  def permutations_fixed_first([]), do: [[]]
+
+  def permutations_fixed_first([head | tail]) do
+    for perm <- permutations(tail), do: [head | perm]
+  end
 end
