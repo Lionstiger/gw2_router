@@ -10,4 +10,3 @@
 - [ ] give option to automatically update clipboard with result, so you dont have to click
 - [ ] heuristics for large lists
 - [x] pin first waypoint
-      To start your Phoenix server:
